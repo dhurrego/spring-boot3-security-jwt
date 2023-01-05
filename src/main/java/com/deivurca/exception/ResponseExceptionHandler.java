@@ -53,4 +53,10 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 	public final ResponseEntity<ProblemDetail> manejarDataIntegrityViolationException(Exception ex, WebRequest request){
 		return ResponseEntity.internalServerError().body(ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, "Alguno de los campos no cumplen con los reglas de la base de datos"));
 	}
+
+	@ExceptionHandler(BusinessException.class)
+	public ResponseEntity<ProblemDetail> manejarBussinessException(BusinessException ex,
+																   WebRequest request) {
+		return ResponseEntity.badRequest().body(ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage()));
+	}
 }

@@ -2,6 +2,7 @@ package com.deivurca.service.impl;
 
 import com.deivurca.config.security.JwtService;
 import com.deivurca.config.security.UserDetailsImpl;
+import com.deivurca.exception.BusinessException;
 import com.deivurca.model.dto.AuthenticationRequest;
 import com.deivurca.model.dto.AuthenticationResponse;
 import com.deivurca.model.dto.RegistryRequest;
@@ -29,13 +30,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse register(RegistryRequest registryRequest) {
+        repository.findOneByEmail(registryRequest.email())
+                .ifPresent(usuario -> {
+                    throw new BusinessException("Ya existe un usuario registrado con el mismo email");
+                });
+
         Usuario usuario = Usuario.builder()
                 .nombre(registryRequest.nombre())
                 .email(registryRequest.email())
                 .password(passwordEncoder.encode(registryRequest.password()))
                 .role(Role.USER)
                 .build();
-        UserDetails userDetails = new UserDetailsImpl(repository.save(usuario));
+
+        final UserDetails userDetails = new UserDetailsImpl(repository.save(usuario));
         return new AuthenticationResponse(jwtService.generateToken(userDetails));
     }
 
