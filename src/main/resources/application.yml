@@ -1,0 +1,15 @@
+spring:
+  sql:
+    init:
+      mode: always
+      continue-on-error: false
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
+    defer-datasource-initialization: true
+
+app:
+  jwt:
+    secret: E)H@McQfThWmZq4t7w!z%C*F-JaNdRgU
